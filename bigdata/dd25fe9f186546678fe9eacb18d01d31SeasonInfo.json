@@ -1,0 +1,1 @@
+{"status": "success", "data": {"uuid": "dd25fe9f186546678fe9eacb18d01d31", "nickname": "aimsey", "roleType": 1, "eloRate": null, "eloRank": null, "country": null, "seasonResults": {"8": {"last": {"eloRate": 883, "eloRank": 5700, "phasePoint": 0, "percentile": 56.4}, "highest": 924, "lowest": 861, "phases": [], "phaseHighest": 924}}}}

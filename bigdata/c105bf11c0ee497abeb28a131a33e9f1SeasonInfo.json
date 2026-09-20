@@ -1,0 +1,1 @@
+{"status": "success", "data": {"uuid": "c105bf11c0ee497abeb28a131a33e9f1", "nickname": "Bitzel", "roleType": 0, "eloRate": null, "eloRank": null, "country": null, "seasonResults": {"10": {"last": {"eloRate": 948, "eloRank": 9708, "phasePoint": 0, "percentile": 19}, "highest": 1044, "lowest": 832, "phases": [], "phaseHighest": 1044}}}}

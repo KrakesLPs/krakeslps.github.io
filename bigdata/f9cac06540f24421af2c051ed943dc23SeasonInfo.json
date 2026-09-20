@@ -1,0 +1,1 @@
+{"status": "success", "data": {"uuid": "f9cac06540f24421af2c051ed943dc23", "nickname": "sleepai", "roleType": 1, "eloRate": null, "eloRank": null, "country": null, "seasonResults": {"9": {"last": {"eloRate": 540, "eloRank": 14183, "phasePoint": 0, "percentile": 74.4}, "highest": 540, "lowest": 520, "phases": [], "phaseHighest": 540}}}}

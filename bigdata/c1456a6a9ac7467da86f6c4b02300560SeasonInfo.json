@@ -1,0 +1,1 @@
+{"status": "success", "data": {"uuid": "c1456a6a9ac7467da86f6c4b02300560", "nickname": "KingSammelot", "roleType": 1, "eloRate": null, "eloRank": null, "country": null, "seasonResults": {"11": {"last": {"eloRate": 921, "eloRank": 11286, "phasePoint": 0, "percentile": 40.7}, "highest": 921, "lowest": 921, "phases": [], "phaseHighest": 921}}}}

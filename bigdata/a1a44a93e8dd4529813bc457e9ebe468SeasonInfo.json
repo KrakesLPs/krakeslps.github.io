@@ -1,0 +1,1 @@
+{"status": "success", "data": {"uuid": "a1a44a93e8dd4529813bc457e9ebe468", "nickname": "LukeyTV", "roleType": 0, "eloRate": null, "eloRank": null, "country": null, "seasonResults": {"9": {"last": {"eloRate": 491, "eloRank": 15530, "phasePoint": 0, "percentile": 81.5}, "highest": 645, "lowest": 445, "phases": [], "phaseHighest": 645}}}}

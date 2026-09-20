@@ -1,0 +1,1 @@
+{"status": "success", "data": {"uuid": "8c3d406f950e4761a7f10cf3202be59b", "nickname": "ghostiefruit", "roleType": 1, "eloRate": null, "eloRank": null, "country": "us", "seasonResults": {"11": {"last": {"eloRate": 895, "eloRank": 12092, "phasePoint": 0, "percentile": 43.6}, "highest": 957, "lowest": 855, "phases": [], "phaseHighest": 957}}}}
