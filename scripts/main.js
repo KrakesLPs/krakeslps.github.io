@@ -1,40 +1,4 @@
-const myImage = document.querySelector("img");
-
-myImage.addEventListener("click", () => {
-  const mySrc = myImage.getAttribute("src");
-  if (mySrc === "images/The_Mid_Offs_4.png") {
-    myImage.setAttribute("src", "images/ranked_logo.png");
-    myImage.setAttribute("width", "500");
-  } else {
-    myImage.setAttribute("src", "images/The_Mid_Offs_4.png");
-    myImage.setAttribute("width", "500");
-  }
-});
-
-let myButton = document.querySelector("button");
-let myHeading = document.querySelector("h1");
-
-function setUserName() {
-  const myName = prompt("Please enter your ingame name to compare to the Mid-Offs players.");
-  if (!myName) {
-    setUserName();
-  } else {
-    localStorage.setItem("name", myName);
-    myHeading.textContent = `Let's track some Mid-Offs, ${myName}`;
-  }
-}
-
-// if (!localStorage.getItem("name")) {
-//   setUserName();
-// } else {
-//   const storedName = localStorage.getItem("name");
-//   myHeading.textContent = `Let's track some Mid-Offs, ${storedName}`;
-// }
-
-myButton.addEventListener("click", () => {
-  setUserName();
-});
-//------------ Cool stuff that actually is used
+//Player List
 const MidOffs1Players_uuid = ["7c59923124d348bd936cd81560d567a0","26bdff37fec848f1980f66bf69ee751c","2a932fbde2454dcf89679ae596f22fb1","9ae689ef618144899e25d9ad39812035","d96b2fdf3ffd42d1a1ed3b26b3d5e173","7bfc146016f0428a9fd8b82b663a2a2c",
                         "d81d8db4443d4cafb19d90a377a6df02","68ec42a99c3d4538afe574cc9d8e06b6","0c063bfd3521413da76650be1d71f00e","41251c16bbf74ef1a1818bd5c6fc9a1d","5237b4b75eed421da43f0e4968e69207","37a1e4a827bd4eee9f5ba258a11e53df",
                         "dd25fe9f186546678fe9eacb18d01d31","5f820c3958834392b1743125ac05e38c","adcd683f23e44bddbe5ecc3ec9fe67ab","504a61571e82458aaf4490c87d8e81e7"];
@@ -48,11 +12,51 @@ const MidOffsLivePlayers_uuid = ["1e2bf44f122f4960a62d7da9609f52e7"];
 const MidOffs4Players_uuid = ["eb0d84ae8c124ffbb13a2f7c47cd98de","1b423bc029d14595a83d4c8670fcbda4","c1456a6a9ac7467da86f6c4b02300560","ea2ff7e97f4345efa6e7493c656eaabf","5a1839d2cecc4c85aa08b346f9f772a1","8c3d406f950e4761a7f10cf3202be59b", 
                         "5f8eb73b25be4c5aa50fd27d65e30ca0","84555089add149b1a26d8021270a40f0","975e0f7987b4407b97b06cfa8d80cc1a","909b156ff022491bbd0adf41cb88041d","18ef65d48dc04bb689fa682edbd31132","8eb3fb13acc447819c226013ff3a60f7", 
                         "2bbb5709ebd448388cd7466efc42db11","57d77b5a531c4c22a42450190976b369","16bcd4be2799494ebdf8ff4916b1a627","7cbbd43c9ccd470c89973b516b160f74"];
-const MidOffsPlayers_uuid = MidOffs1Players_uuid + MidOffs2Players_uuid + MidOffs3Players_uuid + MidOffsLivePlayers_uuid + MidOffs4Players_uuid;
+const MidOffsPlayers_uuid = MidOffs1Players_uuid.concat(MidOffs2Players_uuid, MidOffs3Players_uuid, MidOffsLivePlayers_uuid, MidOffs4Players_uuid);
+
+//Image Switcher
+// const myImage = document.querySelector("img");
+
+// myImage.addEventListener("click", () => {
+//   const mySrc = myImage.getAttribute("src");
+//   if (mySrc === "images/The_Mid_Offs_4.png") {
+//     myImage.setAttribute("src", "images/ranked_logo.png");
+//     myImage.setAttribute("width", "500");
+//   } else {
+//     myImage.setAttribute("src", "images/The_Mid_Offs_4.png");
+//     myImage.setAttribute("width", "500");
+//   }
+// });
+
+//Username Button
+let usernameButton = document.getElementById("usernameButton");
+let myHeading = document.querySelector("h1");
+
+function setUserName() {
+  const myName = prompt("Please enter your ingame name to compare to the Mid-Offs players.");
+  if (!myName) {
+    setUserName();
+  } else {
+    localStorage.setItem("name", myName);
+    myHeading.textContent = `Let's track some Mid-Offs, ${myName}`;
+  }
+}
+
+usernameButton.addEventListener("click", () => {
+  setUserName();
+});
+
 //AlltimePeakElo
-function getAllTimePeakELO(uuid) {
+async function getAlltimePeakElo(uuid) {
   let peakElo = 0;
-  let playerSeasonInfo = JSON.parse("/bigdata/" + uuid + "SeasonInfo.json");
+  let path = "./bigdata/" + uuid + "SeasonInfo.json";
+  console.log(path);
+  let playerSeasonInfo = await getJSON(path);
+  if (playerSeasonInfo == null) {
+    console.log("the json doesnt work");
+  }
+  console.log(playerSeasonInfo.data.seasonResults);
+  for(const part of playerSeasonInfo) {console.log(playerSeasonInfo[part])}; //why tf would the json stuff not be iterable, python can easily do it and its just the same thing 4 times why would this be hard???
   for(const season of playerSeasonInfo.data.seasonResults) {
     if(playerSeasonInfo.data.seasonResults !== null && playerSeasonInfo.data.seasonResults[season].highest !== null) {
       if(playerSeasonInfo.data.seasonResults[season].highest > peakElo) {
@@ -64,19 +68,16 @@ function getAllTimePeakELO(uuid) {
 }
 
 //BestAlltimePeakElo
-let bestAlltimePeakEloButton = document.getElementById("BestAlltimePeakEloButton");
-let bestAlltimePeakEloText = document.getElementById("BestAlltimePeakElo");
-
-bestAlltimePeakEloButton.addEventListener("click", () => {
-  displayBestAlltimePeakElo();
-});
-
-function getBestAlltimePeakElo() {
+async function getBestAlltimePeakElo() {
   let highestPeakElo = 0;
   let highestPeakPlayer = "nobody";
   for (const player of MidOffsPlayers_uuid) {
-    let playerSeasonInfo = JSON.parse("/bigdata/" + player + "SeasonInfo.json");
-    let AlltimePeakElo = getAlltimePeakElo(player);
+    let path = "./bigdata/" + player + "SeasonInfo.json";
+    console.log(player);
+    console.log(path);
+    let playerSeasonInfo = await getJSON(path);
+    console.log(playerSeasonInfo);
+    let AlltimePeakElo = await getAlltimePeakElo(player);
     if (AlltimePeakElo > highestPeakElo) {
       highestPeakElo = AlltimePeakElo;
       highestPeakPlayer = playerSeasonInfo.data.nickname;
@@ -85,30 +86,43 @@ function getBestAlltimePeakElo() {
   return (highestPeakElo, highestPeakPlayer);
 }
 
+let bestAlltimePeakEloButton = document.getElementById("BestAlltimePeakEloButton");
+let bestAlltimePeakEloText = document.getElementById("BestAlltimePeakElo");
+
+bestAlltimePeakEloButton.addEventListener("click", () => {
+  displayBestAlltimePeakElo();
+});
+
 function displayBestAlltimePeakElo() {
   bestAlltimePeakEloText.textContent = "not test anymore";
-  //let result = getBestAlltimePeakElo();
-  //bestAlltimePeakEloText.textContent = result[1] + " achieved the highest peak Elo of any Mid-Offs player at " + result[0] + " Elo.";
+  console.log("button got pressed")
+  let result = getBestAlltimePeakElo();
+  bestAlltimePeakEloText.textContent = result[1] + " achieved the highest peak Elo of any Mid-Offs player at " + result[0] + " Elo.";
 }
-/*
-def getAllTimePeakELO(uuid):
-    with open(cwd + "/bigdata/" + uuid + "SeasonInfo.json", "r") as f:
-        maxElo = 0
-        playerSeasonInfo = json.load(f)
-        for season in playerSeasonInfo["data"]["seasonResults"]:
-            if playerSeasonInfo["data"]["seasonResults"] is not None and playerSeasonInfo["data"]["seasonResults"][season]["highest"] is not None:
-                if maxElo < int(playerSeasonInfo["data"]["seasonResults"][season]["highest"]):
-                    maxElo = playerSeasonInfo["data"]["seasonResults"][season]["highest"]            
-        return maxElo
 
-def findHighestPeakElo():
-    highestPeakElo = 0
-    highestPeakPlayer = "nobody"
-    for player in MidOffsPlayers_uuid:
-        with open(cwd + "/bigdata/" + player + "SeasonInfo.json", "r") as g:
-            playerSeasonInfo = json.load(g)
-            if getAllTimePeakELO(player) > highestPeakElo:
-                highestPeakElo = getAllTimePeakELO(player)
-                highestPeakPlayer = playerSeasonInfo["data"]["nickname"]
-    return (highestPeakElo,highestPeakPlayer)
-*/
+async function getJSON(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+// function readtestjson() {
+//   fetch('./scripts/testjson.json')
+//     .then(response => {
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! Status: ${response.status}`);
+//         }
+//         return response.json();  
+//     })
+//     .then(data => console.log(data))  
+//     .catch(error => console.error('Failed to fetch data:', error)); 
+// }
