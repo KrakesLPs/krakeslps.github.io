@@ -28,36 +28,33 @@ const MidOffsPlayers_uuid = MidOffs1Players_uuid.concat(MidOffs2Players_uuid, Mi
 //   }
 // });
 
-//Username Button
-let usernameButton = document.getElementById("usernameButton");
-let myHeading = document.querySelector("h1");
+// //Username Button
+// let usernameButton = document.getElementById("usernameButton");
+// let myHeading = document.querySelector("h1");
 
-function setUserName() {
-  const myName = prompt("Please enter your ingame name to compare to the Mid-Offs players.");
-  if (!myName) {
-    setUserName();
-  } else {
-    localStorage.setItem("name", myName);
-    myHeading.textContent = `Let's track some Mid-Offs, ${myName}`;
-  }
-}
+// function setUserName() {
+//   const myName = prompt("Please enter your ingame name to compare to the Mid-Offs players.");
+//   if (!myName) {
+//     setUserName();
+//   } else {
+//     localStorage.setItem("name", myName);
+//     myHeading.textContent = `Let's track some Mid-Offs, ${myName}`;
+//   }
+// }
 
-usernameButton.addEventListener("click", () => {
-  setUserName();
-});
+// usernameButton.addEventListener("click", () => {
+//   setUserName();
+// });
 
 //AlltimePeakElo
 async function getAlltimePeakElo(uuid) {
   let peakElo = 0;
   let path = "./bigdata/" + uuid + "SeasonInfo.json";
-  console.log(path);
   let playerSeasonInfo = await getJSON(path);
   if (playerSeasonInfo == null) {
     console.log("the json doesnt work");
   }
-  console.log(playerSeasonInfo.data.seasonResults);
-  for(const part of playerSeasonInfo) {console.log(playerSeasonInfo[part])}; //why tf would the json stuff not be iterable, python can easily do it and its just the same thing 4 times why would this be hard???
-  for(const season of playerSeasonInfo.data.seasonResults) {
+  for(const season in playerSeasonInfo.data.seasonResults) {
     if(playerSeasonInfo.data.seasonResults !== null && playerSeasonInfo.data.seasonResults[season].highest !== null) {
       if(playerSeasonInfo.data.seasonResults[season].highest > peakElo) {
         peakElo = playerSeasonInfo.data.seasonResults[season].highest;
@@ -73,17 +70,14 @@ async function getBestAlltimePeakElo() {
   let highestPeakPlayer = "nobody";
   for (const player of MidOffsPlayers_uuid) {
     let path = "./bigdata/" + player + "SeasonInfo.json";
-    console.log(player);
-    console.log(path);
     let playerSeasonInfo = await getJSON(path);
-    console.log(playerSeasonInfo);
     let AlltimePeakElo = await getAlltimePeakElo(player);
     if (AlltimePeakElo > highestPeakElo) {
       highestPeakElo = AlltimePeakElo;
       highestPeakPlayer = playerSeasonInfo.data.nickname;
     }
   }
-  return (highestPeakElo, highestPeakPlayer);
+  return [highestPeakElo, highestPeakPlayer];
 }
 
 let bestAlltimePeakEloButton = document.getElementById("BestAlltimePeakEloButton");
@@ -93,10 +87,10 @@ bestAlltimePeakEloButton.addEventListener("click", () => {
   displayBestAlltimePeakElo();
 });
 
-function displayBestAlltimePeakElo() {
+async function displayBestAlltimePeakElo() {
   bestAlltimePeakEloText.textContent = "not test anymore";
   console.log("button got pressed")
-  let result = getBestAlltimePeakElo();
+  let result = await getBestAlltimePeakElo();
   bestAlltimePeakEloText.textContent = result[1] + " achieved the highest peak Elo of any Mid-Offs player at " + result[0] + " Elo.";
 }
 
@@ -108,13 +102,51 @@ async function getJSON(url) {
     }
 
     const result = await response.json();
-    console.log(result);
+    //console.log(result);
     return result;
   } catch (error) {
     console.error(error.message);
   }
 }
 
+// testingSomething();
+// function testingSomething(){
+//   const testjson2 = {
+//     "data": {
+//       "nickname": "Krake",
+//       "seasons": {
+//         "4": {
+//           "peakelo": 1550,
+//           "lastelo": 1250,
+//           "matches": {
+//             "1": "evbo",
+//             "2": "derapchu"
+//           }
+//         },
+//         "5": {
+//           "peakelo": 1660,
+//           "lastelo": 1450,
+//           "matches": {
+//             "1": "evbo",
+//             "2": "derapchu"
+//           }
+//         },
+//         "6": {
+//           "peakelo": 2005,
+//           "lastelo": 12,
+//           "matches": {
+//             "1": "evbo",
+//             "2": "derapchu"
+//           }
+//         }
+//       }
+//     }
+//   };
+//   console.log(testjson2.data.seasons);
+//   for(season in testjson2.data.seasons) {
+//     console.log(testjson2.data.seasons[season]);
+//   }
+// }
 // function readtestjson() {
 //   fetch('./scripts/testjson.json')
 //     .then(response => {
