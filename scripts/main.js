@@ -109,6 +109,83 @@ async function getJSON(url) {
   }
 }
 
+let rqlButton = document.getElementById("rqlButton");
+let rqlText = document.getElementById("rqlText");
+
+rqlButton.addEventListener("click", () => {
+  examplePlaceholderRequest();
+});
+
+async function examplePlaceholderRequest() {
+  let response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'POST',
+    body: JSON.stringify({
+      title: 'foo',
+      body: 'bar',
+      userId: 1,
+    }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+  })
+  console.log(response.json());
+  rqlText.textContent = JSON.stringify(response);
+}
+
+async function exampleRQLRequest2() {
+  let response = await fetch("https://rql.vivianh.dev/api/v1/query", {
+    method: "GET"});
+  rqlText.textContent = response;
+}
+
+async function exampleRQLRequest() {
+  let response = await fetch("https://rql.vivianh.dev/api/v1/query", {
+    method: "POST",
+    body: JSON.stringify({
+      "mode": "rows",
+      "from": "matches",
+      "select": [
+        {
+          "field": "id",
+          "as": "matchId"
+        },
+        {
+          "field": "date"
+        },
+        {
+          "field": "resultTime"
+        }
+      ],
+      "where": {
+        "fn": "eq",
+        "args": [
+          {
+            "ref": "seed"
+          },
+          {
+            "lit": "m7238vvcpd7mwkcd"
+          }
+        ]
+      },
+      "orderBy": [
+        {
+          "field": "date",
+          "dir": "asc"
+        },
+        {
+          "field": "id",
+          "dir": "asc"
+        }
+      ],
+      "limit": 1
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8"
+    }
+  });
+  rqlText.textContent = response.json();
+}
+
 // testingSomething();
 // function testingSomething(){
 //   const testjson2 = {
