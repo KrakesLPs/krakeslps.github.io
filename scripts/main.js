@@ -14,39 +14,88 @@ const MidOffs4Players_uuid = ["eb0d84ae8c124ffbb13a2f7c47cd98de","1b423bc029d145
                         "2bbb5709ebd448388cd7466efc42db11","57d77b5a531c4c22a42450190976b369","16bcd4be2799494ebdf8ff4916b1a627","7cbbd43c9ccd470c89973b516b160f74"];
 const MidOffsPlayers_uuid = MidOffs1Players_uuid.concat(MidOffs2Players_uuid, MidOffs3Players_uuid, MidOffsLivePlayers_uuid, MidOffs4Players_uuid);
 
-//Image Switcher
-// const myImage = document.querySelector("img");
+//---HTML Elements---
+//Username Button
+let usernameButton = document.getElementById("usernameButton");
+let myHeading = document.querySelector("h1");
+usernameButton.addEventListener("click", () => {
+  setUserName();
+});
 
-// myImage.addEventListener("click", () => {
-//   const mySrc = myImage.getAttribute("src");
-//   if (mySrc === "images/The_Mid_Offs_4.png") {
-//     myImage.setAttribute("src", "images/ranked_logo.png");
-//     myImage.setAttribute("width", "500");
-//   } else {
-//     myImage.setAttribute("src", "images/The_Mid_Offs_4.png");
-//     myImage.setAttribute("width", "500");
-//   }
-// });
+//Best alltime peak Elo Button
+let bestAlltimePeakEloButton = document.getElementById("BestAlltimePeakEloButton");
+let bestAlltimePeakEloText = document.getElementById("BestAlltimePeakElo");
+bestAlltimePeakEloButton.addEventListener("click", () => {
+  displayBestAlltimePeakElo();
+});
 
-// //Username Button
-// let usernameButton = document.getElementById("usernameButton");
-// let myHeading = document.querySelector("h1");
+//rql Button when vivian fixes its shit
+let rqlButton = document.getElementById("rqlButton");
+let rqlText = document.getElementById("rqlText");
+rqlButton.addEventListener("click", () => {
+  exampleRQLRequest();
+});
 
-// function setUserName() {
-//   const myName = prompt("Please enter your ingame name to compare to the Mid-Offs players.");
-//   if (!myName) {
-//     setUserName();
-//   } else {
-//     localStorage.setItem("name", myName);
-//     myHeading.textContent = `Let's track some Mid-Offs, ${myName}`;
-//   }
-// }
+//The table
+let tableButton = document.getElementById("tableButton");
+let mainTable = document.getElementById("mainTable");
+tableButton.addEventListener("click", () => {
+  buildTableBody();
+});
 
-// usernameButton.addEventListener("click", () => {
-//   setUserName();
-// });
+//---UTIL---
+//Full fetch implementation basically
+async function getJSON(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+    const result = await response.json();
+    //console.log(result);
+    return result;
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+//Takes and int of milliseconds and gives HH:MM:SS.ms or MM:SS.ms if it's less than an hour
+function msToHHMMSSMSMSMS(millisecs) {
+  ms = millisecs%1000;
+  s = Math.floor(millisecs/1000);
+  m = Math.floor(s/60);
+  h = Math.floor(m/60);
+  s = s%60;
+  m = m%60;
+  let HHMMSSMSMSMS = `${m}:${s}.${ms}`;
+  if(h != 0) {
+    HHMMSSMSMSMS = `${h}:${m}:${s}.${ms}`;
+  }
+  //console.log(HHMMSSMSMSMS);
+  return HHMMSSMSMSMS;
+}
 
-//AlltimePeakElo
+//---HTML Manipulation---
+//Sets Heading With Username
+function setUserName() {
+  const myName = prompt("Please enter your ingame name to compare to the Mid-Offs players.");
+  if (!myName) {
+    setUserName();
+  } else {
+    localStorage.setItem("name", myName);
+    myHeading.textContent = `Let's track some Mid-Offs, ${myName}`;
+  }
+}
+
+//Shows best alltime peak Elo and name
+async function displayBestAlltimePeakElo() {
+  bestAlltimePeakEloText.textContent = "not test anymore";
+  console.log("button got pressed")
+  let result = await getBestAlltimePeakElo();
+  bestAlltimePeakEloText.textContent = result[1] + " achieved the highest peak Elo of any Mid-Offs player at " + result[0] + " Elo.";
+}
+
+//---Stats
+//Gets a players all time peak Elo
 async function getAlltimePeakElo(uuid) {
   let peakElo = 0;
   let path = "./bigdata/" + uuid + "SeasonInfo.json";
@@ -80,42 +129,53 @@ async function getBestAlltimePeakElo() {
   return [highestPeakElo, highestPeakPlayer];
 }
 
-let bestAlltimePeakEloButton = document.getElementById("BestAlltimePeakEloButton");
-let bestAlltimePeakEloText = document.getElementById("BestAlltimePeakElo");
+//The big table function
+async function buildTableBody() {
+  for(const player of MidOffsPlayers_uuid) {
+    let path = "./bigdata/" + player + "userInfo.json";
+    let playerUserInfo = await getJSON(path);
 
-bestAlltimePeakEloButton.addEventListener("click", () => {
-  displayBestAlltimePeakElo();
-});
+    const newRow = mainTable.insertRow();
 
-async function displayBestAlltimePeakElo() {
-  bestAlltimePeakEloText.textContent = "not test anymore";
-  console.log("button got pressed")
-  let result = await getBestAlltimePeakElo();
-  bestAlltimePeakEloText.textContent = result[1] + " achieved the highest peak Elo of any Mid-Offs player at " + result[0] + " Elo.";
-}
+    const nameCell = newRow.insertCell();
+    nameCell.innerHTML = playerUserInfo.data.nickname;
 
-async function getJSON(url) {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
+    const alltimePeakEloCell = newRow.insertCell();
+    alltimePeakEloCell.innerHTML = await getAlltimePeakElo(player);
+
+    const seasonPeakEloCell = newRow.insertCell();
+    seasonPeakEloCell.innerHTML = playerUserInfo.data.seasonResult.highest;
+
+    const currentEloCell = newRow.insertCell();
+    currentEloCell.innerHTML = playerUserInfo.data.seasonResult.last.eloRate;
+    
+    const alltimePBCell = newRow.insertCell(); //Competitive PB, not PR or Casual
+    alltimePBCell.innerHTML = msToHHMMSSMSMSMS(playerUserInfo.data.statistics.total.bestTime.ranked);
+
+    const seasonAverageCell = newRow.insertCell(); //Competitive PB, not PR or Casual
+    let average = Math.round(playerUserInfo.data.statistics.season.completionTime.ranked/playerUserInfo.data.statistics.season.completions.ranked)
+    //console.log(average);
+    if(isNaN(average)) {
+      seasonAverageCell.innerHTML = "No matches this season";
+    } else {
+      seasonAverageCell.innerHTML = msToHHMMSSMSMSMS(average);
     }
+    
+    const numOfRankedMatchesCell = newRow.insertCell();
+    numOfRankedMatchesCell.innerHTML = playerUserInfo.data.statistics.total.playedMatches.ranked;
 
-    const result = await response.json();
-    //console.log(result);
-    return result;
-  } catch (error) {
-    console.error(error.message);
+    const numOfCasualMatchesCell = newRow.insertCell();
+    numOfCasualMatchesCell.innerHTML = playerUserInfo.data.statistics.total.playedMatches.casual;
+
+    const numOfPrivateMatchesCell = newRow.insertCell();
+    numOfPrivateMatchesCell.innerHTML = "idk yet";
+
+    const midOffsCell = newRow.insertCell();
+    midOffsCell.innerHTML = "hardcoded"; //with extra arr prob
   }
 }
 
-let rqlButton = document.getElementById("rqlButton");
-let rqlText = document.getElementById("rqlText");
-
-rqlButton.addEventListener("click", () => {
-  examplePlaceholderRequest();
-});
-
+//---Data Scraping Prayge---
 async function examplePlaceholderRequest() {
   let response = await fetch('https://jsonplaceholder.typicode.com/posts', {
     method: 'POST',
@@ -186,44 +246,16 @@ async function exampleRQLRequest() {
   rqlText.textContent = response.json();
 }
 
-// testingSomething();
-// function testingSomething(){
-//   const testjson2 = {
-//     "data": {
-//       "nickname": "Krake",
-//       "seasons": {
-//         "4": {
-//           "peakelo": 1550,
-//           "lastelo": 1250,
-//           "matches": {
-//             "1": "evbo",
-//             "2": "derapchu"
-//           }
-//         },
-//         "5": {
-//           "peakelo": 1660,
-//           "lastelo": 1450,
-//           "matches": {
-//             "1": "evbo",
-//             "2": "derapchu"
-//           }
-//         },
-//         "6": {
-//           "peakelo": 2005,
-//           "lastelo": 12,
-//           "matches": {
-//             "1": "evbo",
-//             "2": "derapchu"
-//           }
-//         }
-//       }
-//     }
-//   };
-//   console.log(testjson2.data.seasons);
-//   for(season in testjson2.data.seasons) {
-//     console.log(testjson2.data.seasons[season]);
-//   }
-// }
+// @TODO
+// -Obviously data scraping, but need rql to do it right
+// -Make Table interactive with sorting
+// -Design the website (Images and stuff), maybe have a podium for pbs or peak elos
+// -Do accessibility (captions etc)
+// -Individual sites for each player with links and detailed stats
+// -Implement functionality to compare to yourself/custom players (needs data scraping/rql/api)
+// -Learn about client vs server stuff, performance, storing data in different places
+// -add some fun gimmick stuff
+
 // function readtestjson() {
 //   fetch('./scripts/testjson.json')
 //     .then(response => {

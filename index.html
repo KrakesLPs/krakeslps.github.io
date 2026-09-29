@@ -16,7 +16,8 @@
         <p>This is a fun little tracker to see where all the Mid-Offs contestants have gone on their MCSR Journey post Mid-Offs. 
             Following stats are being tracked:</p>
         <ul>
-            <li>Peak Elo</li>
+            <li>Alltime Peak Elo</li>
+            <li>Season Peak Elo</li>
             <li>Current Elo</li>
             <li>PB</li>
             <li>Season Average</li>
@@ -34,29 +35,24 @@
         <p>All the data for this website is compiled from the <a href="https://api.mcsrranked.com">MCSR Ranked Api</a></p>
         <img src="images/The_Mid-Offs_4.png" alt="The MidOffs Season 4 Logo" width="500" height="500"/>
         <h2>Comparison (fake table fake data for visualizatiion purposes)</h2>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Peak Elo</th>
-                <th>Current Elo</th>
-                <th>PB</th>
-                <th>Season Average</th>
-                <th>Number of Ranked Matches</th>
-                <th>Number of Casual Matches</th>
-                <th>Number of Private Room Matches</th>
-                <th>Mid-Offs Tourney Performance</th>
-            </tr>
-            <tr>
-                <td>Evbo</td>
-                <td>1750</td>
-                <td>1502</td>
-                <td>8:32</td>
-                <td>12:50</td>
-                <td>500</td>
-                <td>3</td>
-                <td>300</td>
-                <td>3. and 1.</td>
-            </tr>
+        <button id="tableButton">Build table</button>
+        <table id="mainTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Alltime Peak Elo</th>
+                    <th>Season Peak Elo</th>
+                    <th>Current Elo</th>
+                    <th>PB</th>
+                    <th>Season Average</th>
+                    <th>Number of Ranked Matches</th>
+                    <th>Number of Casual Matches</th>
+                    <th>Number of Private Room Matches</th>
+                    <th>Mid-Offs Tourney Performance</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
         </table>
         <button id="BestAlltimePeakEloButton">Show the highest Elo any Mid-Offs player has ever achieved</button>
         <p id="BestAlltimePeakElo"> test</p>
