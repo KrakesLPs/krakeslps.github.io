@@ -9,32 +9,22 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Press+Start+2P&display=swap" rel="stylesheet">
         <script async src="scripts/main.js"></script>
+        <link rel="apple-touch-icon" sizes="180x180" href="images/favicon_io/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="images/favicon_io/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon_io/favicon-16x16.png">
+        <link rel="manifest" href="images/favicon_io/site.webmanifest">
     </head>
     <body>
         <h1>The Unofficial Mid-Offs Tracker</h1>
         <h2>About</h2>
-        <p>This is a fun little tracker to see where all the Mid-Offs contestants have gone on their MCSR Journey post Mid-Offs. 
-            Following stats are being tracked:</p>
+        <p>This is a fun little tracker to see where all the Mid-Offs contestants have gone on their MCSR Journey post Mid-Offs. </p>
+        <p>My goals when making this website are the following:</p>
         <ul>
-            <li>Alltime Peak Elo</li>
-            <li>Season Peak Elo</li>
-            <li>Current Elo</li>
-            <li>PB</li>
-            <li>Season Average</li>
-            <li>Number of Ranked Matches</li>
-            <li>Number of Casual Matches</li>
-            <li>Number of Private Room Matches</li>
-            <li>Mid-Offs Tourney Performance</li>
-        </ul>
-        <p>My goals when making creating this website are the following:</p>
-        <ol>
             <li>Making sure I know how good I have to be at the game to be ahead of all the Mid-Offs Players</li>
             <li>Seeing wether or not better Mid-Offs performance correlates with better Ranked performance</li>
-            <li>Something else</li>
-        </ol>
-        <p>All the data for this website is compiled from the <a href="https://api.mcsrranked.com">MCSR Ranked Api</a></p>
-        <img src="images/The_Mid-Offs_4.png" alt="The MidOffs Season 4 Logo" width="500" height="500"/>
-        <h2>Comparison (fake table fake data for visualizatiion purposes)</h2>
+        </ul>
+        <p>All the data for this website is compiled from the <a href="https://api.mcsrranked.com">MCSR Ranked Api</a> and <a href="https://rql.vivianh.dev/openapi.json">RQL</a>.</p>
+        <h2>Comparisons</h2>
         <button id="tableButton">Build table</button>
         <table id="mainTable">
             <thead>
@@ -51,13 +41,14 @@
                     <th>Mid-Offs Tourney Performance</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="maintbody">
             </tbody>
         </table>
         <button id="BestAlltimePeakEloButton">Show the highest Elo any Mid-Offs player has ever achieved</button>
         <p id="BestAlltimePeakElo"> test</p>
         <button id="rqlButton">Example RQL request</button>
         <p id="rqlText">RQL Test</p>
-        <button id="usernameButton">Change user</button>
+        <button id="usernameButton">Add custom player</button>
     </body>
+    <footer>Made by Krake</footer>
 </html>

@@ -20,6 +20,7 @@ let usernameButton = document.getElementById("usernameButton");
 let myHeading = document.querySelector("h1");
 usernameButton.addEventListener("click", () => {
   setUserName();
+  addCustomPlayerRow();
 });
 
 //Best alltime peak Elo Button
@@ -38,7 +39,7 @@ rqlButton.addEventListener("click", () => {
 
 //The table
 let tableButton = document.getElementById("tableButton");
-let mainTable = document.getElementById("mainTable");
+let mainTableBody = document.getElementById("maintbody");
 tableButton.addEventListener("click", () => {
   buildTableBody();
 });
@@ -82,7 +83,6 @@ function setUserName() {
     setUserName();
   } else {
     localStorage.setItem("name", myName);
-    myHeading.textContent = `Let's track some Mid-Offs, ${myName}`;
   }
 }
 
@@ -98,7 +98,7 @@ async function displayBestAlltimePeakElo() {
 //Gets a players all time peak Elo
 async function getAlltimePeakElo(uuid) {
   let peakElo = 0;
-  let path = "./bigdata/" + uuid + "SeasonInfo.json";
+  let path = "https://api.mcsrranked.com/users/" + uuid + "/seasons";
   let playerSeasonInfo = await getJSON(path);
   if (playerSeasonInfo == null) {
     console.log("the json doesnt work");
@@ -118,7 +118,7 @@ async function getBestAlltimePeakElo() {
   let highestPeakElo = 0;
   let highestPeakPlayer = "nobody";
   for (const player of MidOffsPlayers_uuid) {
-    let path = "./bigdata/" + player + "SeasonInfo.json";
+    let path = "https://api.mcsrranked.com/users/" + player + "/seasons";
     let playerSeasonInfo = await getJSON(path);
     let AlltimePeakElo = await getAlltimePeakElo(player);
     if (AlltimePeakElo > highestPeakElo) {
@@ -132,10 +132,10 @@ async function getBestAlltimePeakElo() {
 //The big table function
 async function buildTableBody() {
   for(const player of MidOffsPlayers_uuid) {
-    let path = "./bigdata/" + player + "userInfo.json";
+    let path = "https://api.mcsrranked.com/users/" + player;
     let playerUserInfo = await getJSON(path);
 
-    const newRow = mainTable.insertRow();
+    const newRow = mainTableBody.insertRow();
 
     const nameCell = newRow.insertCell();
     nameCell.innerHTML = playerUserInfo.data.nickname;
@@ -173,6 +173,53 @@ async function buildTableBody() {
     const midOffsCell = newRow.insertCell();
     midOffsCell.innerHTML = "hardcoded"; //with extra arr prob
   }
+}
+
+//Adding Custom player to table
+//replace stuff with rql when I can
+async function addCustomPlayerRow() {
+  const newRow = mainTableBody.insertRow();
+  
+  let path = "https://api.mcsrranked.com/users/" + localStorage.getItem("name");
+  let playerUserInfo = await getJSON(path);
+  console.log(localStorage.getItem("name"));
+  const nameCell = newRow.insertCell();
+    nameCell.innerHTML = playerUserInfo.data.nickname;
+
+  const alltimePeakEloCell = newRow.insertCell();
+  //alltimePeakEloCell.innerHTML = await getAlltimePeakElo(player);
+
+  const seasonPeakEloCell = newRow.insertCell();
+  seasonPeakEloCell.innerHTML = playerUserInfo.data.seasonResult.highest;
+
+  const currentEloCell = newRow.insertCell();
+  currentEloCell.innerHTML = playerUserInfo.data.seasonResult.last.eloRate;
+  
+  const alltimePBCell = newRow.insertCell(); //Competitive PB, not PR or Casual
+  alltimePBCell.innerHTML = msToHHMMSSMSMSMS(playerUserInfo.data.statistics.total.bestTime.ranked);
+
+  const seasonAverageCell = newRow.insertCell(); //Competitive PB, not PR or Casual
+  let average = Math.round(playerUserInfo.data.statistics.season.completionTime.ranked/playerUserInfo.data.statistics.season.completions.ranked)
+  //console.log(average);
+  if(isNaN(average)) {
+    seasonAverageCell.innerHTML = "No matches this season";
+  } else {
+    seasonAverageCell.innerHTML = msToHHMMSSMSMSMS(average);
+  }
+  
+  const numOfRankedMatchesCell = newRow.insertCell();
+  numOfRankedMatchesCell.innerHTML = playerUserInfo.data.statistics.total.playedMatches.ranked;
+
+  const numOfCasualMatchesCell = newRow.insertCell();
+  numOfCasualMatchesCell.innerHTML = playerUserInfo.data.statistics.total.playedMatches.casual;
+
+  const numOfPrivateMatchesCell = newRow.insertCell();
+  numOfPrivateMatchesCell.innerHTML = "idk yet";
+
+  const midOffsCell = newRow.insertCell();
+  midOffsCell.innerHTML = "not a MidOffs participant"; //with extra arr prob
+
+  usernameButton.textContent = "Change custom player"
 }
 
 //---Data Scraping Prayge---
@@ -255,6 +302,7 @@ async function exampleRQLRequest() {
 // -Implement functionality to compare to yourself/custom players (needs data scraping/rql/api)
 // -Learn about client vs server stuff, performance, storing data in different places
 // -add some fun gimmick stuff
+// -find a solution to the ludwig 4 account problem
 
 // function readtestjson() {
 //   fetch('./scripts/testjson.json')
